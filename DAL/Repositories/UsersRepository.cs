@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
@@ -6,7 +6,7 @@ using Dapper;
 using Dapper.FastCrud;
 using DAL.Models;
 
-namespace DAL
+namespace DAL.Repositories
 {
     public class UsersRepository
     {
