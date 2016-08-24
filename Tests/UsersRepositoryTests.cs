@@ -8,10 +8,7 @@ namespace Tests
     [TestClass]
     public class UsersRepositoryTests : AbstractRepositoryTests<UsersRepository>
     {
-        public override UsersRepository InitializeRepository()
-        {
-            return new UsersRepository(GlobalInitializer.ConnectionStringSettings);
-        }
+        public override UsersRepository InitializeRepository() => new UsersRepository(GlobalInitializer.ConnectionStringSettings);
 
         [TestMethod]
         public void AtStartWeWeHaveOneUser()

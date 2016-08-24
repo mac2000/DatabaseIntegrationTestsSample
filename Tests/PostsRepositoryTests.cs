@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Configuration;
-using System.Transactions;
-using DAL;
 using DAL.Models;
 using DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,19 +8,16 @@ namespace Tests
     [TestClass]
     public class PostsRepositoryTests : AbstractRepositoryTests<PostsRepository>
     {
-        public override PostsRepository InitializeRepository()
-        {
-            return new PostsRepository(GlobalInitializer.ConnectionStringSettings);
-        }
+        public override PostsRepository InitializeRepository() => new PostsRepository(GlobalInitializer.ConnectionStringSettings);
 
         [TestMethod]
-        public void TestMethod0()
+        public void AtStartWeHaveOnePost()
         {
             Assert.AreEqual(1, Repository.Total());
         }
 
         [TestMethod]
-        public void TestMethod1()
+        public void CanFindPostsById()
         {
             var post = Repository.Find(1);
             Assert.IsNotNull(post);
