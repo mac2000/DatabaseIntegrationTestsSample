@@ -11,14 +11,14 @@ namespace Tests
     public abstract class AbstractRepositoryTests<T>
     {
         private TransactionScope _trans;
-        private T _repository;
+        protected T Repository;
 
         public abstract T InitializeRepository();
 
         [TestInitialize]
         public void InitializeTest()
         {
-            _repository = InitializeRepository();
+            Repository = InitializeRepository();
             _trans = new TransactionScope();
         }
 

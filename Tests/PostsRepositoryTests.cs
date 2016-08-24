@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Transactions;
 using DAL;
 using DAL.Models;
@@ -8,48 +9,54 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Tests
 {
     [TestClass]
-    public class PostsRepositoryTests
+    public class PostsRepositoryTests : AbstractRepositoryTests<PostsRepository>
     {
-        private PostsRepository _postsRepository;
-        private TransactionScope _trans;
-
-        [TestInitialize]
-        public void InitializeTest()
+        public override PostsRepository InitializeRepository()
         {
-            _postsRepository = new PostsRepository(new ConnectionStringSettings("Default", GlobalInitializer.SqlConnectionString));
-            _trans = new TransactionScope();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            _trans.Dispose();
+            return new PostsRepository(GlobalInitializer.ConnectionStringSettings);
         }
 
         [TestMethod]
         public void TestMethod0()
         {
-            Assert.AreEqual(1, _postsRepository.Total());
+            Assert.AreEqual(1, Repository.Total());
         }
 
         [TestMethod]
         public void TestMethod1()
         {
-            var post = _postsRepository.Find(1);
+            var post = Repository.Find(1);
             Assert.IsNotNull(post);
         }
 
         [TestMethod]
         public void CanSavePost()
         {
-            var total = _postsRepository.Total();
+            var total = Repository.Total();
             var post = new Post
             {
                 Title = "Hello World"
             };
-            _postsRepository.Save(post);
+            Repository.Save(post);
             Assert.AreNotEqual(0, post.Id);
-            Assert.AreEqual(total + 1, _postsRepository.Total());
+            Assert.AreEqual(total + 1, Repository.Total());
+        }
+
+        [TestMethod]
+        public void UpdatesExistingPosts()
+        {
+            var total = Repository.Total();
+            var post = new Post
+            {
+                Id = 1,
+                Title = "Hello World",
+                CreatedAt = DateTime.Now.Date
+            };
+            Repository.Save(post);
+            Assert.AreEqual(1, post.Id);
+            Assert.AreEqual(total, Repository.Total());
+            post = Repository.Find(1);
+            Assert.AreEqual(DateTime.Now.Date, post.CreatedAt.Date);
         }
     }
 }

@@ -1,68 +1,58 @@
-﻿using System.Configuration;
-using System.Linq;
-using System.Transactions;
-using DAL;
+﻿using System.Linq;
+using DAL.Models;
 using DAL.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using User = DAL.Models.User;
 
 namespace Tests
 {
     [TestClass]
-    public class UsersRepositoryTests
+    public class UsersRepositoryTests : AbstractRepositoryTests<UsersRepository>
     {
-        private TransactionScope _trans;
-        private UsersRepository _usersRepository;
-
-        [TestInitialize]
-        public void InitializeTest()
+        public override UsersRepository InitializeRepository()
         {
-            _usersRepository = new UsersRepository(new ConnectionStringSettings("Default", GlobalInitializer.SqlConnectionString));
-            _trans = new TransactionScope();
-        }
-
-        [TestCleanup]
-        public void Cleanup()
-        {
-            _trans.Dispose();
+            return new UsersRepository(GlobalInitializer.ConnectionStringSettings);
         }
 
         [TestMethod]
         public void AtStartWeWeHaveOneUser()
         {
-            Assert.AreEqual(1, _usersRepository.Total());
-            var user = _usersRepository.Find(1);
+            Assert.AreEqual(1, Repository.Total());
+
+            var user = Repository.Find(1);
             Assert.AreEqual("foo", user.FirstName);
         }
 
         [TestMethod]
         public void SaveMethodSetIdPropertyAndSavesRecordToDatabase()
         {
-            Assert.AreEqual(1, _usersRepository.Total());
+            var total = Repository.Total();
+            Assert.AreEqual(1, total);
+
             var user = new User { FirstName = "foo", LastName = "bar" };
-            _usersRepository.Save(user);
+            Repository.Save(user);
+
             Assert.AreNotEqual(0, user.Id);
-            Assert.AreEqual(2, _usersRepository.Total());
+            Assert.AreEqual(total + 1, Repository.Total());
         }
 
         [TestMethod]
         public void SaveMethodUpdatesExistingRecord()
         {
             var user = new User { FirstName = "foo", LastName = "bar" };
-            _usersRepository.Save(user);
+            Repository.Save(user);
             Assert.AreNotEqual(0, user.Id);
             user.FirstName = "Hello";
             user.LastName = "World";
-            _usersRepository.Save(user);
-            user = _usersRepository.Find(user.Id);
+            Repository.Save(user);
+            user = Repository.Find(user.Id);
             Assert.AreEqual("Hello", user.FirstName);
-            Assert.AreEqual(2, _usersRepository.Total());
+            Assert.AreEqual(2, Repository.Total());
         }
 
         [TestMethod]
         public void CanFindUsers()
         {
-            var users = _usersRepository.Find("foo").ToList();
+            var users = Repository.Find("foo").ToList();
             Assert.AreEqual(1, users.Count());
             Assert.AreEqual("foo", users.FirstOrDefault()?.FirstName);
         }
