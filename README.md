@@ -22,8 +22,7 @@ public class SampleRepositoryTests
 
     /// <summary>
     /// Runs once
-    ///
-</summary>
+    /// </summary>
     [AssemblyInitialize]
     public static void AssemblyInitialize(TestContext testContext)
     {
@@ -33,8 +32,7 @@ public class SampleRepositoryTests
     /// <summary>
     /// Runs before each test
     /// Starts new transaction
-    ///
-</summary>
+    /// </summary>
     [TestInitialize]
     public void InitializeTest()
     {
@@ -55,8 +53,7 @@ public class SampleRepositoryTests
     /// <summary>
     /// Runs after each test
     /// Rollback transaction
-    ///
-</summary>
+    /// </summary>
     [TestCleanup]
     public void Cleanup()
     {
